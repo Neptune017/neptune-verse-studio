@@ -171,6 +171,33 @@
     .slider-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: background 0.2s; border: none; }
     .slider-dot.active { background: var(--bright-blue); }
 
+    /* ─── PORTFOLIO ─── */
+    #portfolio { background: var(--white); }
+    .portfolio-grid { margin-top: 2.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .portfolio-item { border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; aspect-ratio: 16/10; background: var(--off-white); }
+    .portfolio-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .portfolio-item:hover img { transform: scale(1.05); }
+    .portfolio-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(29,11,58,0.7) 0%, transparent 60%); opacity: 0; transition: opacity 0.3s; display: flex; align-items: flex-end; padding: 1rem; }
+    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+    .portfolio-overlay span { color: white; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.5px; }
+    @media (max-width: 640px) { .portfolio-grid { grid-template-columns: 1fr; } }
+
+    /* ─── CHARACTERS ─── */
+    #characters { background: var(--deep-purple); }
+    #characters .section-label { color: var(--bright-blue); }
+    #characters .section-title { color: var(--white); }
+    #characters .section-sub { color: var(--sky-blue); }
+    .char-tabs { display: flex; gap: 0.8rem; margin-top: 2rem; flex-wrap: wrap; }
+    .char-tab { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1rem 0.5rem 0.5rem; border-radius: 50px; border: 2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .char-tab img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.15); }
+    .char-tab span { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.9rem; color: rgba(255,255,255,0.55); transition: color 0.2s; }
+    .char-tab.active { border-color: var(--bright-blue); background: rgba(0,200,240,0.08); }
+    .char-tab.active span { color: var(--white); }
+    .char-tab:hover:not(.active) { border-color: rgba(255,255,255,0.3); }
+    .char-panel { display: none; margin-top: 1.5rem; border-radius: 14px; overflow: hidden; }
+    .char-panel.active { display: block; }
+    .char-panel img { width: 100%; display: block; border-radius: 14px; max-height: 520px; object-fit: cover; object-position: top; }
+
     /* ─── ABOUT ─── */
     #about { background: var(--off-white); }
     .about-inner { display: flex; gap: 4rem; align-items: center; flex-wrap: wrap; }
@@ -223,6 +250,7 @@
     <div class="nav-logo">Neptune<span>·</span>Verse</div>
     <ul>
       <li><a href="#services" data-en="Services" data-hu="Szolgáltatások">Services</a></li>
+      <li><a href="#portfolio" data-en="Portfolio" data-hu="Portfólió">Portfolio</a></li>
       <li><a href="#commissions" data-en="Commissions" data-hu="Megrendelés">Commissions</a></li>
       <li><a href="#games" data-en="Games" data-hu="Játékok">Games</a></li>
       <li><a href="#about" data-en="About" data-hu="Rólam">About</a></li>
@@ -291,6 +319,31 @@
           <h3 data-en="Comics & Book Illustration" data-hu="Képregény & könyvillusztráció">Comics & Book Illustration</h3>
           <p data-en="Sequential art, comic pages, and book illustrations from 1–20 pages. Delivery in JPG, PNG, PSD, or PDF." data-hu="Képregény- és könyvillusztrációk, 1–20 oldal. JPG, PNG, PSD vagy PDF formátumban.">Sequential art, comic pages, and book illustrations from 1–20 pages. Delivery in JPG, PNG, PSD, or PDF.</p>
           <span class="service-tag" data-en="Commissions Open" data-hu="Megrendelések nyitva">Commissions Open</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label" data-en="My Work" data-hu="Munkáim">My Work</div>
+        <h2 class="section-title" data-en="Portfolio" data-hu="Portfólió">Portfolio</h2>
+        <p class="section-sub" data-en="A selection of original illustrations — characters, game art, and client commissions, all drawn in a unique cartoon/anime-inspired style." data-hu="Válogatás az eredeti illusztrációkból – karakterek, játékgrafika és megrendelői munkák, mind egyedi rajzfilmes/anime ihletésű stílusban.">A selection of original illustrations — characters, game art, and client commissions, all drawn in a unique cartoon/anime-inspired style.</p>
+      </div>
+      <div class="portfolio-grid reveal">
+        <div class="portfolio-item">
+          <img src="portfolio1.png" alt="Voodoo pocket world characters — Peppermint Academy" />
+          <div class="portfolio-overlay"><span data-en="Voodoo Park — PA Characters" data-hu="Voodoo Park — PA Karakterek">Voodoo Park — PA Characters</span></div>
+        </div>
+        <div class="portfolio-item">
+          <img src="portfolio2.png" alt="Characters flying with balloons — commission illustration" />
+          <div class="portfolio-overlay"><span data-en="Commission Illustration" data-hu="Megrendelői Illusztráció">Commission Illustration</span></div>
+        </div>
+        <div class="portfolio-item">
+          <img src="portfolio3.png" alt="CanalSim game key art — commission" />
+          <div class="portfolio-overlay"><span data-en="CanalSim — Game Key Art" data-hu="CanalSim — Játék Key Art">CanalSim — Game Key Art</span></div>
         </div>
       </div>
     </div>
@@ -467,6 +520,40 @@
     </div>
   </section>
 
+  <!-- CHARACTERS -->
+  <section id="characters">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label" data-en="Meet the Cast" data-hu="Ismerd meg a szereplőket">Meet the Cast</div>
+        <h2 class="section-title" data-en="Main Romance Characters" data-hu="Fő Romantikus Karakterek">Main Romance Characters</h2>
+        <p class="section-sub" data-en="Three very different men, each carrying their own weight. Who you connect with is up to you." data-hu="Három nagyon különböző férfi, mindegyik a saját terhével. Hogy kihez kapcsolódsz, csak rajtad múlik.">Three very different men, each carrying their own weight. Who you connect with is up to you.</p>
+      </div>
+      <div class="char-tabs reveal">
+        <button class="char-tab active" onclick="showChar('rick')">
+          <img src="Rick_icon.png" alt="Rick" />
+          <span>Rick</span>
+        </button>
+        <button class="char-tab" onclick="showChar('jet')">
+          <img src="Jet_icon.png" alt="Jet" />
+          <span>Jet</span>
+        </button>
+        <button class="char-tab" onclick="showChar('dimitri')">
+          <img src="Dimitri_icon.png" alt="Dimitri" />
+          <span>Dimitri</span>
+        </button>
+      </div>
+      <div class="char-panel active reveal" id="char-rick">
+        <img src="Rick_info.png" alt="Rick — Friend of plants, Western farmer" />
+      </div>
+      <div class="char-panel" id="char-jet">
+        <img src="Jet_info.png" alt="Jet — Fiery jokester, Personal trainer" />
+      </div>
+      <div class="char-panel" id="char-dimitri">
+        <img src="Dimitri_info.png" alt="Dimitri — Icy shy guy, Noble descendant" />
+      </div>
+    </div>
+  </section>
+
   <!-- ABOUT -->
   <section id="about">
     <div class="container">
@@ -558,6 +645,13 @@
     function goSlide(i) {
       slideIndex = i;
       updateSlider();
+    }
+    // Character tabs
+    function showChar(name) {
+      document.querySelectorAll('.char-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.char-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('char-' + name).classList.add('active');
+      event.currentTarget.classList.add('active');
     }
   </script>
 </body>
