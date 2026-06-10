@@ -655,18 +655,17 @@
         </div>
         <div class="newsletter-form-wrap reveal">
           <div class="ml-subscribe-form-42336372">
-            <div class="row-form">
-              <form class="newsletter-form ml-block-form" action="https://assets.mailerlite.com/jsonp/2416549/forms/189706565216896726/subscribe" data-code="" method="post" target="_blank">
-                <input aria-label="email" aria-required="true" type="email" name="fields[email]" placeholder="your@email.com" autocomplete="email">
-                <button type="submit" class="primary" data-en="Subscribe →" data-hu="Feliratkozás →">Subscribe →</button>
-                <button disabled="disabled" style="display:none;" type="button" class="loading">
+            <div class="row-form" id="nl-form-wrap">
+              <form class="newsletter-form" id="nl-form" novalidate>
+                <input aria-label="email" aria-required="true" type="email" id="nl-email" name="fields[email]" placeholder="your@email.com" autocomplete="email">
+                <button type="submit" class="primary" id="nl-submit-btn" data-en="Subscribe →" data-hu="Feliratkozás →">Subscribe →</button>
+                <button disabled style="display:none;" type="button" id="nl-loading-btn" class="loading">
                   <span data-en="Sending…" data-hu="Küldés…">Sending…</span>
                 </button>
-                <input type="hidden" name="ml-submit" value="1">
-                <input type="hidden" name="anticsrf" value="true">
+                <p id="nl-error" style="display:none; color:#e05; font-size:0.85rem; font-weight:700; margin-top:0.3rem;"></p>
               </form>
             </div>
-            <div class="newsletter-success row-success" style="display:none;">
+            <div class="newsletter-success row-success" id="nl-success" style="display:none;">
               <h4 data-en="You're in! 🎉" data-hu="Feliratkoztál! 🎉">You're in! 🎉</h4>
               <p data-en="Thanks for subscribing — updates are on their way." data-hu="Köszönjük a feliratkozást – a hírek hamarosan megérkeznek.">Thanks for subscribing — updates are on their way.</p>
             </div>
@@ -747,14 +746,59 @@
       event.currentTarget.classList.add('active');
     }
   </script>
+  <!-- MailerLite popup -->
   <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v83147fa8ce2d95cb73ece7f28b469519" type="text/javascript"></script>
   <script>
     fetch("https://assets.mailerlite.com/jsonp/2416549/forms/189706565216896726/takel");
-    function ml_webform_success_42336372() {
-      var $ = ml_jQuery || jQuery;
-      $('.ml-subscribe-form-42336372 .row-success').show();
-      $('.ml-subscribe-form-42336372 .row-form').hide();
-    }
+
+    // Newsletter inline form — fetch submit, no redirect
+    document.getElementById('nl-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('nl-email').value.trim();
+      const errorEl = document.getElementById('nl-error');
+      errorEl.style.display = 'none';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errorEl.textContent = currentLang === 'hu' ? 'Kérlek adj meg egy érvényes e-mail címet.' : 'Please enter a valid email address.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      const submitBtn = document.getElementById('nl-submit-btn');
+      const loadingBtn = document.getElementById('nl-loading-btn');
+      submitBtn.style.display = 'none';
+      loadingBtn.style.display = 'block';
+
+      try {
+        const body = new URLSearchParams();
+        body.append('fields[email]', email);
+        body.append('ml-submit', '1');
+        body.append('anticsrf', 'true');
+
+        const res = await fetch('https://assets.mailerlite.com/jsonp/2416549/forms/189706565216896726/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString()
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          document.getElementById('nl-form-wrap').style.display = 'none';
+          document.getElementById('nl-success').style.display = 'block';
+          // re-run lang so success message text matches current lang
+          setLang(currentLang);
+        } else {
+          throw new Error('Server returned failure');
+        }
+      } catch (err) {
+        loadingBtn.style.display = 'none';
+        submitBtn.style.display = 'block';
+        errorEl.textContent = currentLang === 'hu'
+          ? 'Hiba történt. Kérlek próbáld újra.'
+          : 'Something went wrong. Please try again.';
+        errorEl.style.display = 'block';
+      }
+    });
   </script>
 </body>
 </html>
