@@ -287,6 +287,67 @@
       .about-inner { flex-direction: column; text-align: center; }
       .about-art { margin: 0 auto; }
     }
+    /* ─── COMMISSION MODAL ─── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(15, 8, 40, 0.82);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--white); border-radius: 18px; padding: 2.5rem;
+      width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto;
+      position: relative;
+      transform: translateY(20px); transition: transform 0.3s ease;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+    .modal-close {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      background: var(--off-white); border: none; width: 32px; height: 32px;
+      border-radius: 50%; cursor: pointer; font-size: 1.1rem; color: var(--mid-purple);
+      display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+    }
+    .modal-close:hover { background: rgba(0,200,240,0.15); }
+    .modal-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--bright-blue); margin-bottom: 0.3rem; }
+    .modal-title { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.6rem; color: var(--deep-purple); margin-bottom: 1.5rem; letter-spacing: -0.5px; }
+    .modal-field { margin-bottom: 1rem; }
+    .modal-field label { display: block; font-weight: 800; font-size: 0.83rem; color: var(--deep-purple); margin-bottom: 0.35rem; }
+    .modal-field input, .modal-field select, .modal-field textarea {
+      width: 100%; padding: 0.75rem 1rem; border: 2px solid rgba(74,45,138,0.18);
+      border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 600;
+      color: var(--deep-purple); background: var(--white); outline: none;
+      transition: border-color 0.2s; box-sizing: border-box;
+    }
+    .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus { border-color: var(--bright-blue); }
+    .modal-field textarea { resize: vertical; min-height: 100px; }
+    .modal-field select { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a2d8a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.9rem center; background-size: 14px; padding-right: 2.5rem; }
+    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .modal-divider { height: 1px; background: rgba(74,45,138,0.1); margin: 1.2rem 0; }
+    .modal-submit {
+      width: 100%; padding: 0.9rem; background: var(--deep-purple); color: var(--white);
+      border: none; border-radius: 8px; font-family: 'Nunito', sans-serif;
+      font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .modal-submit:hover { background: var(--mid-purple); transform: translateY(-2px); }
+    .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .modal-success { text-align: center; padding: 2rem 1rem; }
+    .modal-success .success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--bright-blue), var(--mid-purple));
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.2rem; font-size: 1.8rem;
+    }
+    .modal-success h3 { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--deep-purple); margin-bottom: 0.5rem; }
+    .modal-success p { color: var(--mid-purple); font-weight: 600; line-height: 1.6; }
+    .modal-note { font-size: 0.78rem; color: var(--light-purple); font-weight: 600; margin-top: 0.8rem; text-align: center; line-height: 1.5; }
+    .modal-ref-hint { font-size: 0.75rem; color: var(--light-purple); font-weight: 600; margin-top: 0.35rem; line-height: 1.5; }
+    @media (max-width: 540px) { .modal-row { grid-template-columns: 1fr; } .modal-box { padding: 1.8rem 1.4rem; } }
   </style>
 </head>
 <body>
@@ -481,7 +542,7 @@
           </div>
           <p class="commission-note" data-en="Print on merchandise (t-shirt, mug, pillow, phone case etc.) available — printing and shipping charged separately." data-hu="Termékre nyomtatás (póló, bögre, párna, telefontok stb.) lehetséges – a nyomtatás és szállítás külön kerül felszámításra.">Print on merchandise (t-shirt, mug, pillow, phone case etc.) available — printing and shipping charged separately.</p>
           <div class="commission-cta">
-            <a class="btn-primary ml-onclick-form" href="javascript:void(0)" onclick="ml('show', 'gS3SBm', true)" data-en="Request a Commission →" data-hu="Megrendelés küldése →">Request a Commission →</a>
+            <a class="btn-primary" href="javascript:void(0)" onclick="openCommissionModal()" data-en="Request a Commission →" data-hu="Megrendelés küldése →">Request a Commission →</a>
           </div>
         </div>
       </div>
@@ -746,57 +807,215 @@
       event.currentTarget.classList.add('active');
     }
   </script>
-  <!-- MailerLite popup -->
+  <!-- COMMISSION MODAL -->
+  <div class="modal-overlay" id="commissionModal" onclick="handleModalOverlayClick(event)">
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+
+      <div id="modal-form-view">
+        <div class="modal-label" data-en="Open for Commissions" data-hu="Megrendelések nyitva">Open for Commissions</div>
+        <h2 class="modal-title" data-en="Request a Commission" data-hu="Megrendelés küldése">Request a Commission</h2>
+
+        <form id="commission-form" action="https://formspree.io/f/xljrwovr" method="POST">
+          <input type="hidden" name="_subject" value="New Commission Request — Neptune-Verse Studio">
+          <input type="hidden" name="estimated_price" id="hidden-price">
+
+          <div class="modal-row">
+            <div class="modal-field">
+              <label data-en="Your Name *" data-hu="Neved *">Your Name *</label>
+              <input type="text" name="name" required placeholder="pl. Alex">
+            </div>
+            <div class="modal-field">
+              <label data-en="Email Address *" data-hu="E-mail cím *">Email Address *</label>
+              <input type="email" name="email" required placeholder="email@example.com">
+            </div>
+          </div>
+
+          <div class="modal-row">
+            <div class="modal-field">
+              <label data-en="Commission Type *" data-hu="Megrendelés típusa *">Commission Type *</label>
+              <select name="type" id="calc-type" required onchange="calcPrice()">
+                <option value="" data-price="0" disabled selected data-en="Select…" data-hu="Válassz…">Select…</option>
+                <option value="30" data-en="Half-body" data-hu="Félalakos">Half-body</option>
+                <option value="50" data-en="Full-body" data-hu="Teljes alak">Full-body</option>
+                <option value="75" data-en="Comic Page (per page)" data-hu="Képregény oldal (oldalanként)">Comic Page (per page)</option>
+                <option value="28" data-en="Logo" data-hu="Logó">Logo</option>
+                <option value="41" data-en="Flyer / Poster" data-hu="Szórólap / Plakát">Flyer / Poster</option>
+                <option value="0" data-en="Other / Question" data-hu="Egyéb / Kérdés">Other / Question</option>
+              </select>
+            </div>
+            <div class="modal-field">
+              <label data-en="Number of Characters" data-hu="Karakterek száma">Number of Characters</label>
+              <select name="characters" id="calc-chars" onchange="calcPrice()">
+                <option value="1">1</option>
+                <option value="1.5">2</option>
+                <option value="2">3+</option>
+                <option value="1" data-en="N/A" data-hu="Nem releváns">N/A</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-field">
+            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-weight:800; font-size:0.83rem; color:var(--deep-purple);">
+              <input type="checkbox" id="calc-bg" name="background" onchange="calcPrice()" style="width:16px; height:16px; accent-color:var(--bright-blue); cursor:pointer; border-radius:4px; flex-shrink:0;">
+              <span data-en="Add Background (+$30)" data-hu="Háttér hozzáadása (+$30 / +9 500 Ft)">Add Background (+$30)</span>
+            </label>
+          </div>
+
+          <!-- Price display -->
+          <div id="price-display" style="display:none; background:linear-gradient(135deg, rgba(0,200,240,0.08), rgba(74,45,138,0.08)); border:2px solid rgba(0,200,240,0.3); border-radius:10px; padding:1rem 1.2rem; margin-bottom:1rem;">
+            <div style="font-size:0.72rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--bright-blue); margin-bottom:0.4rem;" data-en="Estimated Price" data-hu="Becsült ár">Estimated Price</div>
+            <div style="display:flex; align-items:baseline; gap:0.8rem; flex-wrap:wrap;">
+              <span id="price-usd" style="font-family:'Outfit',sans-serif; font-weight:900; font-size:1.8rem; color:var(--deep-purple);">$0</span>
+              <span id="price-huf" style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.1rem; color:var(--light-purple);">≈ 0 Ft</span>
+            </div>
+            <p style="font-size:0.75rem; color:var(--light-purple); font-weight:600; margin-top:0.4rem; line-height:1.5;" data-en="This is an estimate. Exact pricing will be confirmed by email after reviewing your request." data-hu="Ez csak becslés. A pontos árat az e-mail válasz után egyeztetjük.">This is an estimate. Exact pricing will be confirmed by email after reviewing your request.</p>
+          </div>
+
+          <div class="modal-field">
+            <label data-en="Preferred Payment" data-hu="Preferált fizetési mód">Preferred Payment</label>
+            <select name="payment">
+              <option data-en="Bank Transfer" data-hu="Banki átutalás">Bank Transfer</option>
+              <option>PayPal</option>
+              <option>Revolut</option>
+              <option>Wise</option>
+              <option data-en="Fiverr Order" data-hu="Fiverr megrendelés">Fiverr Order</option>
+              <option data-en="Not sure yet" data-hu="Még nem tudom">Not sure yet</option>
+            </select>
+          </div>
+
+          <div class="modal-divider"></div>
+
+          <div class="modal-field">
+            <label data-en="Description *" data-hu="Leírás *">Description *</label>
+            <textarea name="description" required placeholder="Describe your character, pose, mood, style, colour palette…"></textarea>
+          </div>
+
+          <div class="modal-field">
+            <label data-en="Reference Images (link)" data-hu="Referencia képek (link)">Reference Images (link)</label>
+            <input type="url" name="references" placeholder="https://drive.google.com/…">
+            <p class="modal-ref-hint" data-en="Upload refs to Google Drive, Imgur or any image host and paste the link here." data-hu="Töltsd fel a referencia képeket Google Drive-ra vagy Imguron, majd illeszd be a linket.">Upload refs to Google Drive, Imgur or any image host and paste the link here.</p>
+          </div>
+
+          <div class="modal-field">
+            <label data-en="Deadline (optional)" data-hu="Határidő (opcionális)">Deadline (optional)</label>
+            <input type="text" name="deadline" placeholder="pl. augusztus vége, nem sürgős…">
+          </div>
+
+          <button type="submit" class="modal-submit" id="modal-submit-btn" data-en="Send Request →" data-hu="Küldés →">Send Request →</button>
+          <p class="modal-note" data-en="I'll reply within 1–3 business days with exact pricing and further details. All artwork is hand-drawn — no AI." data-hu="1–3 munkanapon belül válaszolok a pontos árral és további részletekkel. Minden kép kézzel rajzolt – AI-mentes.">I'll reply within 1–3 business days with exact pricing and further details. All artwork is hand-drawn — no AI.</p>
+        </form>
+      </div>
+
+      <div id="modal-success-view" style="display:none;" class="modal-success">
+        <div class="success-icon">✦</div>
+        <h3 data-en="Request Sent!" data-hu="Elküldve!">Request Sent!</h3>
+        <p data-en="Thanks for reaching out! I'll get back to you within 1–3 business days." data-hu="Köszönöm a megkeresést! 1–3 munkanapon belül válaszolok.">Thanks for reaching out! I'll get back to you within 1–3 business days.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MailerLite newsletter -->
   <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v83147fa8ce2d95cb73ece7f28b469519" type="text/javascript"></script>
   <script>
     fetch("https://assets.mailerlite.com/jsonp/2416549/forms/189706565216896726/takel");
 
-    // Newsletter inline form — fetch submit, no redirect
+    // Newsletter inline form
     document.getElementById('nl-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const email = document.getElementById('nl-email').value.trim();
       const errorEl = document.getElementById('nl-error');
       errorEl.style.display = 'none';
-
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         errorEl.textContent = currentLang === 'hu' ? 'Kérlek adj meg egy érvényes e-mail címet.' : 'Please enter a valid email address.';
         errorEl.style.display = 'block';
         return;
       }
-
       const submitBtn = document.getElementById('nl-submit-btn');
       const loadingBtn = document.getElementById('nl-loading-btn');
       submitBtn.style.display = 'none';
       loadingBtn.style.display = 'block';
-
       try {
         const body = new URLSearchParams();
         body.append('fields[email]', email);
         body.append('ml-submit', '1');
         body.append('anticsrf', 'true');
-
         const res = await fetch('https://assets.mailerlite.com/jsonp/2416549/forms/189706565216896726/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: body.toString()
+          method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString()
         });
         const data = await res.json();
-
         if (data.success) {
           document.getElementById('nl-form-wrap').style.display = 'none';
           document.getElementById('nl-success').style.display = 'block';
-          // re-run lang so success message text matches current lang
           setLang(currentLang);
-        } else {
-          throw new Error('Server returned failure');
-        }
+        } else { throw new Error(); }
       } catch (err) {
         loadingBtn.style.display = 'none';
         submitBtn.style.display = 'block';
-        errorEl.textContent = currentLang === 'hu'
-          ? 'Hiba történt. Kérlek próbáld újra.'
-          : 'Something went wrong. Please try again.';
+        errorEl.textContent = currentLang === 'hu' ? 'Hiba történt. Kérlek próbáld újra.' : 'Something went wrong. Please try again.';
         errorEl.style.display = 'block';
+      }
+    });
+
+    // Commission price calculator
+    function calcPrice() {
+      const typeSelect = document.getElementById('calc-type');
+      const charsSelect = document.getElementById('calc-chars');
+      const bgCheck = document.getElementById('calc-bg');
+      const display = document.getElementById('price-display');
+
+      const basePrice = parseFloat(typeSelect.value) || 0;
+      if (basePrice === 0) { display.style.display = 'none'; return; }
+
+      const charMultiplier = parseFloat(charsSelect.value) || 1;
+      const bgExtra = bgCheck.checked ? 30 : 0;
+      const totalUSD = Math.round(basePrice * charMultiplier) + bgExtra;
+
+      // HUF: multiply by 310, round to nearest 500
+      const rawHUF = totalUSD * 310;
+      const totalHUF = Math.round(rawHUF / 500) * 500;
+
+      document.getElementById('price-usd').textContent = '$' + totalUSD;
+      document.getElementById('price-huf').textContent = '≈ ' + totalHUF.toLocaleString('hu-HU') + ' Ft';
+      document.getElementById('hidden-price').value = '$' + totalUSD + ' / ' + totalHUF.toLocaleString('hu-HU') + ' Ft';
+      display.style.display = 'block';
+
+      // keep lang labels in sync
+      setLang(currentLang);
+    }
+
+    // Commission modal
+    function openCommissionModal() {
+      document.getElementById('commissionModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('commissionModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function handleModalOverlayClick(e) {
+      if (e.target === document.getElementById('commissionModal')) closeModal();
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    document.getElementById('commission-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('modal-submit-btn');
+      btn.disabled = true;
+      btn.textContent = currentLang === 'hu' ? 'Küldés…' : 'Sending…';
+      try {
+        const res = await fetch(this.action, {
+          method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          document.getElementById('modal-form-view').style.display = 'none';
+          document.getElementById('modal-success-view').style.display = 'block';
+          setLang(currentLang);
+        } else { throw new Error(); }
+      } catch {
+        btn.disabled = false;
+        btn.textContent = currentLang === 'hu' ? 'Hiba – próbáld újra' : 'Error – please try again';
+        setTimeout(() => { btn.textContent = currentLang === 'hu' ? 'Küldés →' : 'Send Request →'; }, 3000);
       }
     });
   </script>
