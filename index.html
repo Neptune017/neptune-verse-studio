@@ -783,6 +783,7 @@
         if (!val) return;
         el.innerHTML = val;
       });
+      updatePlaceholders();
     }
     // Screenshot slider
     let slideIndex = 0;
@@ -834,23 +835,38 @@
           <div class="modal-row">
             <div class="modal-field">
               <label data-en="Commission Type *" data-hu="Megrendelés típusa *">Commission Type *</label>
-              <select name="type" id="calc-type" required onchange="calcPrice()">
-                <option value="" data-price="0" disabled selected data-en="Select…" data-hu="Válassz…">Select…</option>
-                <option value="30" data-en="Half-body" data-hu="Félalakos">Half-body</option>
-                <option value="50" data-en="Full-body" data-hu="Teljes alak">Full-body</option>
-                <option value="75" data-en="Comic Page (per page)" data-hu="Képregény oldal (oldalanként)">Comic Page (per page)</option>
-                <option value="28" data-en="Logo" data-hu="Logó">Logo</option>
-                <option value="41" data-en="Flyer / Poster" data-hu="Szórólap / Plakát">Flyer / Poster</option>
-                <option value="0" data-en="Other / Question" data-hu="Egyéb / Kérdés">Other / Question</option>
+              <select id="calc-type" required onchange="onTypeChange()">
+                <option value="" disabled selected data-en="Select…" data-hu="Válassz…">Select…</option>
+                <option value="halfbody"  data-price="30"  data-en="Half-body"           data-hu="Félalakos">Half-body</option>
+                <option value="fullbody"  data-price="50"  data-en="Full-body"            data-hu="Teljes alak">Full-body</option>
+                <option value="comic"     data-price="75"  data-en="Comic Page"           data-hu="Képregény oldal">Comic Page</option>
+                <option value="logo"      data-price="28"  data-en="Logo"                 data-hu="Logó">Logo</option>
+                <option value="flyer"     data-price="41"  data-en="Flyer / Poster"       data-hu="Szórólap / Plakát">Flyer / Poster</option>
+                <option value="other"     data-price="0"   data-en="Other / Question"     data-hu="Egyéb / Kérdés">Other / Question</option>
               </select>
+              <!-- hidden field sends readable label to email -->
+              <input type="hidden" name="type" id="hidden-type">
             </div>
-            <div class="modal-field">
-              <label data-en="Number of Characters" data-hu="Karakterek száma">Number of Characters</label>
-              <select name="characters" id="calc-chars" onchange="calcPrice()">
+            <div class="modal-field" id="chars-field">
+              <label id="chars-label" data-en="Number of Characters" data-hu="Karakterek száma">Number of Characters</label>
+              <select id="calc-chars" name="characters" onchange="calcPrice()">
                 <option value="1">1</option>
                 <option value="1.5">2</option>
                 <option value="2">3+</option>
-                <option value="1" data-en="N/A" data-hu="Nem releváns">N/A</option>
+              </select>
+            </div>
+            <div class="modal-field" id="pages-field" style="display:none;">
+              <label data-en="Number of Pages" data-hu="Oldalak száma">Number of Pages</label>
+              <select id="calc-pages" name="pages" onchange="calcPrice()">
+                <option value="1"  data-mult="1">1</option>
+                <option value="10" data-mult="8">10</option>
+                <option value="20" data-mult="15">20</option>
+              </select>
+            </div>
+            <div class="modal-field" id="na-field" style="display:none;">
+              <label data-en="Number of Characters" data-hu="Karakterek száma">Number of Characters</label>
+              <select name="characters_na" disabled style="opacity:0.45; cursor:not-allowed;">
+                <option data-en="N/A" data-hu="Nem releváns">N/A</option>
               </select>
             </div>
           </div>
@@ -888,18 +904,44 @@
 
           <div class="modal-field">
             <label data-en="Description *" data-hu="Leírás *">Description *</label>
-            <textarea name="description" required placeholder="Describe your character, pose, mood, style, colour palette…"></textarea>
+            <textarea name="description" id="desc-textarea" required
+              placeholder="Describe your character, pose, mood, style, colour palette…"
+              data-placeholder-en="Describe your character, pose, mood, style, colour palette…"
+              data-placeholder-hu="Írd le a karaktert, pózt, hangulatot, stílust, színvilágot…"></textarea>
           </div>
 
           <div class="modal-field">
             <label data-en="Reference Images (link)" data-hu="Referencia képek (link)">Reference Images (link)</label>
-            <input type="url" name="references" placeholder="https://drive.google.com/…">
+            <input type="url" name="references"
+              placeholder="https://drive.google.com/…"
+              data-placeholder-en="https://drive.google.com/…"
+              data-placeholder-hu="https://drive.google.com/…">
             <p class="modal-ref-hint" data-en="Upload refs to Google Drive, Imgur or any image host and paste the link here." data-hu="Töltsd fel a referencia képeket Google Drive-ra vagy Imguron, majd illeszd be a linket.">Upload refs to Google Drive, Imgur or any image host and paste the link here.</p>
           </div>
 
-          <div class="modal-field">
-            <label data-en="Deadline (optional)" data-hu="Határidő (opcionális)">Deadline (optional)</label>
-            <input type="text" name="deadline" placeholder="for example: end of August, take your time…">
+          <div class="modal-row">
+            <div class="modal-field">
+              <label data-en="Deadline (optional)" data-hu="Határidő (opcionális)">Deadline (optional)</label>
+              <input type="text" name="deadline"
+                placeholder="e.g. end of August, no rush…"
+                data-placeholder-en="e.g. end of August, no rush…"
+                data-placeholder-hu="pl. augusztus vége, nem sürgős…">
+            </div>
+            <div class="modal-field">
+              <label data-en="How did you find us? (optional)" data-hu="Hogyan találtál ránk? (opcionális)">How did you find us? (optional)</label>
+              <select name="source">
+                <option value="" data-en="Select…" data-hu="Válassz…">Select…</option>
+                <option data-en="Google / Search" data-hu="Google / Keresés">Google / Search</option>
+                <option data-en="Instagram" data-hu="Instagram">Instagram</option>
+                <option data-en="Facebook" data-hu="Facebook">Facebook</option>
+                <option data-en="itch.io" data-hu="itch.io">itch.io</option>
+                <option data-en="Steam" data-hu="Steam">Steam</option>
+                <option data-en="Discord" data-hu="Discord">Discord</option>
+                <option data-en="MondoCon" data-hu="MondoCon">MondoCon</option>
+                <option data-en="Friend / Word of mouth" data-hu="Ismerős / Szájról szájra">Friend / Word of mouth</option>
+                <option data-en="Other" data-hu="Egyéb">Other</option>
+              </select>
+            </div>
           </div>
 
           <button type="submit" class="modal-submit" id="modal-submit-btn" data-en="Send Request →" data-hu="Küldés →">Send Request →</button>
@@ -957,31 +999,80 @@
       }
     });
 
-    // Commission price calculator
+    // Commission type → chars/pages/NA switcher + price calculator
+    const typeLabels = {
+      halfbody: { en: 'Half-body', hu: 'Félalakos' },
+      fullbody:  { en: 'Full-body', hu: 'Teljes alak' },
+      comic:     { en: 'Comic Page', hu: 'Képregény oldal' },
+      logo:      { en: 'Logo', hu: 'Logó' },
+      flyer:     { en: 'Flyer / Poster', hu: 'Szórólap / Plakát' },
+      other:     { en: 'Other / Question', hu: 'Egyéb / Kérdés' }
+    };
+
+    function onTypeChange() {
+      const type = document.getElementById('calc-type').value;
+      const charsField = document.getElementById('chars-field');
+      const pagesField = document.getElementById('pages-field');
+      const naField    = document.getElementById('na-field');
+
+      // Show correct secondary field
+      if (type === 'halfbody' || type === 'fullbody') {
+        charsField.style.display = '';
+        pagesField.style.display = 'none';
+        naField.style.display    = 'none';
+      } else if (type === 'comic') {
+        charsField.style.display = 'none';
+        pagesField.style.display = '';
+        naField.style.display    = 'none';
+      } else {
+        charsField.style.display = 'none';
+        pagesField.style.display = 'none';
+        naField.style.display    = type ? '' : 'none';
+      }
+
+      // Set readable label for email
+      const label = typeLabels[type];
+      if (label) document.getElementById('hidden-type').value = label.en + ' / ' + label.hu;
+
+      calcPrice();
+    }
+
     function calcPrice() {
-      const typeSelect = document.getElementById('calc-type');
-      const charsSelect = document.getElementById('calc-chars');
-      const bgCheck = document.getElementById('calc-bg');
-      const display = document.getElementById('price-display');
+      const typeEl   = document.getElementById('calc-type');
+      const type     = typeEl.value;
+      const bgCheck  = document.getElementById('calc-bg');
+      const display  = document.getElementById('price-display');
 
-      const basePrice = parseFloat(typeSelect.value) || 0;
-      if (basePrice === 0) { display.style.display = 'none'; return; }
+      const opt      = typeEl.options[typeEl.selectedIndex];
+      const basePrice = opt ? parseFloat(opt.getAttribute('data-price')) || 0 : 0;
 
-      const charMultiplier = parseFloat(charsSelect.value) || 1;
-      const bgExtra = bgCheck.checked ? 30 : 0;
-      const totalUSD = Math.round(basePrice * charMultiplier) + bgExtra;
+      if (!type || basePrice === 0) { display.style.display = 'none'; return; }
 
-      // HUF: multiply by 310, round to nearest 500
-      const rawHUF = totalUSD * 310;
-      const totalHUF = Math.round(rawHUF / 500) * 500;
+      let multiplier = 1;
+      if (type === 'halfbody' || type === 'fullbody') {
+        multiplier = parseFloat(document.getElementById('calc-chars').value) || 1;
+      } else if (type === 'comic') {
+        const pagesOpt = document.getElementById('calc-pages');
+        multiplier = parseFloat(pagesOpt.options[pagesOpt.selectedIndex].getAttribute('data-mult')) || 1;
+      }
 
-      document.getElementById('price-usd').textContent = '$' + totalUSD;
-      document.getElementById('price-huf').textContent = '≈ ' + totalHUF.toLocaleString('hu-HU') + ' Ft';
-      document.getElementById('hidden-price').value = '$' + totalUSD + ' / ' + totalHUF.toLocaleString('hu-HU') + ' Ft';
+      const bgExtra  = bgCheck.checked ? 30 : 0;
+      const totalUSD = Math.round(basePrice * multiplier) + bgExtra;
+      const totalHUF = Math.round((totalUSD * 310) / 500) * 500;
+
+      document.getElementById('price-usd').textContent  = '$' + totalUSD;
+      document.getElementById('price-huf').textContent  = '≈ ' + totalHUF.toLocaleString('hu-HU') + ' Ft';
+      document.getElementById('hidden-price').value     = '$' + totalUSD + ' / ' + totalHUF.toLocaleString('hu-HU') + ' Ft';
       display.style.display = 'block';
 
-      // keep lang labels in sync
-      setLang(currentLang);
+      // update placeholder langs
+      updatePlaceholders();
+    }
+
+    function updatePlaceholders() {
+      document.querySelectorAll('[data-placeholder-' + currentLang + ']').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + currentLang);
+      });
     }
 
     // Commission modal
